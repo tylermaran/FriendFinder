@@ -1,0 +1,28 @@
+{
+  "name": "friendfinder",
+  "version": "1.0.0",
+  "description": "Matches you with friends based on survey results",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylermaran/FriendFinder.git"
+  },
+  "keywords": [
+    "friendfinder",
+    "express"
+  ],
+  "author": "themanmaran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tylermaran/FriendFinder/issues"
+  },
+  "homepage": "https://github.com/tylermaran/FriendFinder#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3"
+  }
+}
