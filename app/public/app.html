@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Food-Finder!</title>
+    <link rel="icon" type="image" href="http://pixelartmaker.com/art/b2e1309002fb37b.png">
+
+    <!-- Latest compiled and minified CSS & JS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Font Awesome Glyphicons -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <div class="navbar-brand">Food Finder!</div>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li class="active">
+                        <a href="/app">Survey</a>
+                    </li>
+                    <li>
+                        <a href="/api/food">Friends API</a>
+                    </li>
+                    <li>
+                        <a href="/api/questions">Questions API</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="about">Sign up:</div>
+        <div class="intro">
+            <input class="form-control form-control-lg" type="text" id="name" placeholder="Name">
+            <input class="form-control form-control-lg" type="text" id="photo" placeholder="Link to a picture">
+        </div>
+        <div class="about">Tell us about yourself:</div>
+        <div class="questions"></div>
+        <div class="submit">
+            <button type="button" class="btn btn-lg" id="submit">Submit</button>
+
+        </div>
+        <div class="message"></div>
+    </div>
+
+    <style>
+        body {
+            background-color: rgb(218, 234, 236);
+            width: 100%;
+        }
+
+        container {
+            width: 100%;
+        }
+
+        .about {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 0 0 0;
+            width: 75%;
+            position: relative;
+            left: 12.5%;
+
+        }
+
+        .intro {
+            width: 75%;
+            position: relative;
+            left: 12.5%;
+            margin: 0 0 10px 0;
+            padding: 10px 10px 10px 10px;
+            background-color: whitesmoke;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .questions {
+            width: 75%;
+            position: relative;
+            left: 12.5%;
+            margin: 10px 0 0 0;
+            padding: 10px 10px 10px 10px;
+            background-color: whitesmoke;
+
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .submit {
+            width: 75%;
+            position: relative;
+            left: 75%;
+            width: 75px;
+            margin: 10px 0 0 0;
+            padding: 10px 10px 10px 10px;
+        }
+
+        .message {
+            width: 75%;
+            font-size: 20px;
+            position: relative;
+            left: 12.5%;
+            color: red;
+            margin: 0 0 25px 0;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+        // Route for getting all Articles from the db
+        $.get("/api/questions", function (req, res) {
+            console.log(req);
+            var questionDiv = $("<div>")
+
+            for (let i = 0; i < req.length; i++) {
+                var question = $("<div>");
+                question.addClass("question");
+                question.attr("id", i);
+                question.text(req[i]);
+
+                var id = "q" + i;
+                console.log(id);
+                var answer = $("<select>");
+                answer.addClass("form-control form-control-lg");
+                answer.attr("id", i);
+
+                option = $("<option>");
+                option.text("");
+
+                option1 = $("<option>");
+                option1.attr("answer", 1);
+                option1.val("1");
+                option1.attr("id", id);
+                option1.text("Agree");
+
+                option2 = $("<option>");
+                option2.attr("answer", 2);
+                option2.val("2");
+                option2.attr("id", id);
+                option2.text("Meh");
+
+                option3 = $("<option>");
+                option3.attr("answer", 3);
+                option3.val("3");
+                option3.attr("id", id);
+                option3.text("Disagree");
+
+                answer.append(option, option1, option2, option3);
+                // var option
+                questionDiv.append(question, answer);
+            }
+            var button = $("<button>");
+            button.text("Testing");
+            button.on("click", function () {
+                console.log("Yup");
+                console.log($("#q1").text());
+
+            })
+
+            $(".questions").append(questionDiv, button);
+        });
+
+
+        // Capture the form inputs
+        $("#submit").on("click", function (event) {
+            event.preventDefault();
+            $(".message").html("");
+            // Form validation
+            function validateForm() {
+                var isValid = true;
+                $(".form-control").each(function () {
+                    if ($(this).val() === "") {
+                        isValid = false;
+                    }
+                });
+                return isValid;
+            }
+
+            // If all required fields are filled
+            if (validateForm()) {
+                // Create an object for the user"s data
+
+                console.log($("#1"));
+                var userData = {
+                    name: $("#name").val(),
+                    photo: $("#photo").val(),
+                    scores: [
+                        $("#1").attr("answer"),
+                        $("#2").attr("answer"),
+                        $("#3").attr("answer"),
+                        $("#4").attr("answer"),
+                        $("#5").attr("answer"),
+                        $("#6").attr("answer")
+                    ]
+                };
+
+                console.log(userData);
+
+                // AJAX post the data to the friends API.
+                $.post("/api/food", userData, function (data) {
+
+                    // Grab the result from the AJAX post so that the best match's name and photo are displayed.
+                    $("#match-name").text(data.name);
+                    $("#match-img").attr("src", data.photo);
+
+                    // Show the modal with the best match
+                    $("#results-modal").modal("toggle");
+
+                });
+            } else {
+                $(".message").html("Please fill out all forms");
+                $('html, body').animate({
+                    scrollTop: $(".message").offset().top
+                }, 1000);
+            }
+        });
+    </script>
+
+</body>

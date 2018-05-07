@@ -1,21 +1,29 @@
 // friends is just an array of people in a json format
-var friends = require("../data/friends");
+var food = require("../data/food");
+var questions = require("../data/questions");
 
 module.exports = function (app) {
 
     // Routes returns all items in friends array as json
-    app.get("/api/friends", function (req, res) {
+    app.get("/api/food", function (req, res) {
         // update to pull from MongoDB
-        res.json(friends);
+        res.json(food);
     });
 
+    // Routes returns all items in friends array as json
+    app.get("/api/questions", function (req, res) {
+        // update to pull from MongoDB
+        res.json(questions);
+    });
+
+    
     // API POST Requests
     // Below code handles when a user submits a form and thus submits data to the server.
     // In each of the below cases, when a user submits form data (a JSON object)
     // ...the JSON is pushed to the appropriate JavaScript array
     // ---------------------------------------------------------------------------
 
-    app.post("/api/friends", function (req, res) {
+    app.post("/api/food", function (req, res) {
         // Note the code here. Our "server" will respond to a user"s survey result
         // Then compare those results against every user in the database.
         // It will then calculate the difference between each of the numbers and the user"s numbers.
@@ -33,6 +41,9 @@ module.exports = function (app) {
 
         // Here we take the result of the user"s survey POST and parse it.
         var userData = req.body;
+        console.log(userData);
+
+        // UserScores is an array of question answers (Agree = 1; Meh = 2)
         var userScores = userData.scores;
 
         // This variable will calculate the difference between the user"s scores and the scores of
@@ -40,8 +51,8 @@ module.exports = function (app) {
         var totalDifference;
 
         // Here we loop through all the friend possibilities in the database.
-        for (var i = 0; i < friends.length; i++) {
-            var currentFriend = friends[i];
+        for (var i = 0; i < food.length; i++) {
+            var currentFriend = food[i];
             totalDifference = 0;
 
             console.log(currentFriend.name);
@@ -66,7 +77,7 @@ module.exports = function (app) {
 
         // Finally save the user's data to the database (this has to happen AFTER the check. otherwise,
         // the database will always return that the user is the user's best friend).
-        friends.push(userData);
+        food.push(userData);
 
         // Return a JSON with the user's bestMatch. This will be used by the HTML in the next page
         res.json(bestMatch);
