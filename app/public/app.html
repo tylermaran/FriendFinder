@@ -31,7 +31,7 @@
                         <a href="/app">Survey</a>
                     </li>
                     <li>
-                        <a href="/api/food">Friends API</a>
+                        <a href="/api/food">Food API</a>
                     </li>
                     <li>
                         <a href="/api/questions">Questions API</a>
@@ -39,12 +39,12 @@
                 </ul>
             </div>
         </nav>
-        <div class="about">Sign up:</div>
+        <div class="about" id="signup">Sign up:</div>
         <div class="intro">
             <input class="form-control form-control-lg" type="text" id="name" placeholder="Name">
             <input class="form-control form-control-lg" type="text" id="photo" placeholder="Link to a picture">
         </div>
-        <div class="about">Tell us about yourself:</div>
+        <div class="about" id="results">Tell us about yourself:</div>
         <div class="questions"></div>
         <div class="submit">
             <button type="button" class="btn btn-lg" id="submit">Submit</button>
@@ -115,6 +115,16 @@
             color: red;
             margin: 0 0 25px 0;
         }
+
+        .resultsmessage {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        img {
+            width: 100%;
+            
+        }
     </style>
 
 
@@ -131,7 +141,6 @@
                 question.text(req[i]);
 
                 var id = "q" + i;
-                console.log(id);
                 var answer = $("<select>");
                 answer.addClass("form-control form-control-lg");
                 answer.attr("id", i);
@@ -158,18 +167,10 @@
                 option3.text("Disagree");
 
                 answer.append(option, option1, option2, option3);
-                // var option
                 questionDiv.append(question, answer);
             }
-            var button = $("<button>");
-            button.text("Testing");
-            button.on("click", function () {
-                console.log("Yup");
-                console.log($("#q1").text());
 
-            })
-
-            $(".questions").append(questionDiv, button);
+            $(".questions").append(questionDiv);
         });
 
 
@@ -181,6 +182,7 @@
             function validateForm() {
                 var isValid = true;
                 $(".form-control").each(function () {
+                    console.log($(this).val());
                     if ($(this).val() === "") {
                         isValid = false;
                     }
@@ -191,32 +193,38 @@
             // If all required fields are filled
             if (validateForm()) {
                 // Create an object for the user"s data
+                var answers = []
+                $(".form-control").each(function () {
+                    console.log($(this).val());
+                    answers.push($(this).val());
+                });
 
-                console.log($("#1"));
                 var userData = {
-                    name: $("#name").val(),
-                    photo: $("#photo").val(),
-                    scores: [
-                        $("#1").attr("answer"),
-                        $("#2").attr("answer"),
-                        $("#3").attr("answer"),
-                        $("#4").attr("answer"),
-                        $("#5").attr("answer"),
-                        $("#6").attr("answer")
-                    ]
-                };
+                    name: answers[0],
+                    image: answers[1],
+                    questions: answers.splice(2, 6)
+                }
 
                 console.log(userData);
 
                 // AJAX post the data to the friends API.
                 $.post("/api/food", userData, function (data) {
+                    console.log(data);
+                    $("#signup").html("");
+                    $(".intro").hide();
+                    $(".questions").html("");
+                    $("#results").hide();
 
-                    // Grab the result from the AJAX post so that the best match's name and photo are displayed.
-                    $("#match-name").text(data.name);
-                    $("#match-img").attr("src", data.photo);
+                    var resultCard = $("<div>");
+                    resultCard.addClass("question");
+                    var message = $("<div>");
+                    message.addClass("resultsmessage");
+                    message.text("Congrats! You matched with " + data.food + "!");
+                    var picture = $("<img>");
+                    picture.attr("src", data.photo);
+                    resultCard.append(message, picture);
 
-                    // Show the modal with the best match
-                    $("#results-modal").modal("toggle");
+                    $(".questions").append(resultCard);
 
                 });
             } else {

@@ -39,15 +39,58 @@
 
     <footer class="footer">
       <div class="container">
-        <p>
-          <a href="/api/food">API Friends List</a> |
-          <a href="https://github.com/afhaque/friendfinder">GitHub Repo</a>
-        </p>
+        <div class="food"></div>
       </div>
     </footer>
 
   </div>
+  <style>
+    body {
+      background-color: rgb(218, 234, 236);
+      width: 100%;
+    }
 
+    .foodtile {
+      width: 45%;
+      /* position: relative; */
+      float: left;
+      margin: 10px 10px 10px 10px;
+      padding: 10px 10px 10px 10px;
+      background-color: whitesmoke;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      text-align: center;
+      border-radius: 5px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    img {
+      width: 100%;
+    }
+  </style>
+
+  <script>
+    $.get("/api/food", function (req, res) {
+      console.log(req);
+      for (let i = 0; i < req.length; i++) {
+        var foodtile = $("<div>");
+        foodtile.addClass("foodtile");
+        var title = $("<div>");
+        title.addClass("title");
+        title.text(req[i].name);
+        var picture = $("<img>");
+        picture.attr("src", req[i].photo);
+        foodtile.append(title, picture);
+        $(".food").append(foodtile);
+
+      }
+
+
+    });
+  </script>
 
 </body>
 
